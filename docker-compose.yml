@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  packagedb:
+    image: postgres:9.5
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./resources/initdb/:/docker-entrypoint-initdb.d/
+      - ./resources/data:/tmp/data
