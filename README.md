@@ -4,18 +4,7 @@ A graphql service which returns package tracking data for a hypothetical package
 
 This purpose of this project was to get more familiar with graphql-clj, so I chose a database schema that I designed and built the graphql service around it.  
 
-
-## The database schema
-
-Here's the database schema:
-
-TODO...
-
-## The GraphQL schema
-
-Here is the graphQl schema:
-
-TODO...
+For more info about the design, see [the docs](./doc/intro.md).
 
 ## Usage
 

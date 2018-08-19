@@ -9,6 +9,8 @@
                                            customer-email-addresses
                                            customer-mailing-addresses
                                            customer-shipments
+                                           facility-by-id
+                                           mailing-address-by-id
                                            shipment-by-tracking-id]]))
 
 (def schema
@@ -25,8 +27,10 @@
     id: Int
     code: String
     name: String
-    mailing_address: MailingAddress
-    scan_events: [ScanEvent]
+    street_address: String
+    city: String
+    state: String
+    zip_code: String
   }
 
   type ScanEvent {
@@ -107,6 +111,16 @@
   [_ parent _]
   (get parent :scan_event))
 
+(defn get-shipment-address
+  [address_id_field _ parent _]
+  (let [address_id (get parent address_id_field)]
+    (mailing-address-by-id address_id)))
+
+(defn get-scan-facility
+  [_ parent _]
+  (prn parent)
+  (facility-by-id (get parent :facility_id)))
+
 (defn resolver-fn [type-name field-name]
   (match/match [type-name field-name]
                ["Query" "customers"] get-all-customers
@@ -116,7 +130,11 @@
                ["Customer" "mailing_addresses"] get-customer-mailing-addresses
                ["Customer" "shipments"] get-customer-shipments
                ["Shipment" "packages"] get-packages
+               ["Shipment" "billing_address"] (partial get-shipment-address :billing_address_id)
+               ["Shipment" "origin_address"] (partial get-shipment-address :origin_address_id)
+               ["Shipment" "destination_address"] (partial get-shipment-address :destination_address_id)
                ["Package" "scan_events"] get-scan-events
+               ["ScanEvent" "facility"] get-scan-facility
                :else nil))
 
 (def validated-schema (sv/validate-schema schema))
